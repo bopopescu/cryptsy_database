@@ -305,6 +305,7 @@ class Cryptsy():
 				self.cryptsy_database_instance.insert_data_into_markets(data)
 				corrsponding_id = self.cryptsy_database_instance.query_table_markets_to_get_the_id\
 								(each_market[0],each_market[1])
+				self.marketlable["%s"%market_label] = corrsponding_id
 				print("corrsponding_id:  %d"%corrsponding_id)
 				if (corrsponding_id == None):
 					raise Exception("Failed to locate the new market added into the database")
@@ -389,10 +390,8 @@ class Cryptsy():
 		for i in range(int(0),T):
 			self.cryptsy_database_instance.insert_data_into_orderbook\
 													(data_orderbook[i*10000:(i+1)*10000-1])
-																								
 
-		print ()
-		print ("\n\n\n")
+		print ("\n")
 		
 		
 if __name__ == '__main__':
@@ -401,15 +400,14 @@ if __name__ == '__main__':
 	buffer_right = 60
 	precision = 0.5
 	logfile=open('log.log','a')
-
-
+	
 	"""
 	a = Cryptsy(settings)
 	start = time.time()
-	a.debug_Import_json_object(1433655915)
+	a.debug_Import_json_object(1433760907)
 	a.process()
 	print ("Execution Time:", time.time()-start)
-	a.debug_Import_json_object(1433655915)
+	a.debug_Import_json_object(1433760907)
 	a.process()
 	print ("Execution Time:", time.time()-start)
 	"""
@@ -430,7 +428,7 @@ if __name__ == '__main__':
 						time.sleep(60)
 						a.json_Obj_Update()
 					a.process()
-					print ("Execution Time:", time.time()-start)
+					print ("Execution Time:", time.time()-start, end="\n\n\n\n")
 				except Exception as e:
 					logfile.write(str(datetime.datetime.now()))
 					logfile.write('     ')
@@ -452,3 +450,4 @@ if __name__ == '__main__':
 				logfile.write('\n')
 				a.Save_json_object()
 				pass
+
