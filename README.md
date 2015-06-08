@@ -1,7 +1,7 @@
 **CryptsyData 1.0**
 ===================
 
-This is a python program which collects data from Cryptsy Exchange and store them in MySQL database.
+This is a python program which collects data from Cryptsy Exchange and stores them in the MySQL database.
 
 > **Data Collected:**
 
@@ -11,13 +11,10 @@ This is a python program which collects data from Cryptsy Exchange and store the
 > - Order book snapshot
 
 
-
-
 Database Schemas
 -------------
 
 ![Schemas](https://github.com/lxjhk/cryptsy_database/blob/master/schemas.png?raw=true)
-
 
 
 Documentation
