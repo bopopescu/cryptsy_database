@@ -80,8 +80,9 @@ class cryptsy_database():
 			self.Mysql_instance.database = self.db_name
 
 	def detect_a_new_machine(self):
-		create_table = {} # Python Dictionary Delcaration
-		create_table['markets']=(
+		create_table = [] # Python Dictionary Delcaration
+		#Table markets
+		create_table.append(["markets",(
 			"CREATE TABLE `markets` ("
 			"  `id` INT(50) NOT NULL AUTO_INCREMENT,"
 			"  `marketid` INT(50),"
@@ -97,9 +98,11 @@ class cryptsy_database():
 			"  INDEX (`primarycode`) ,"
 			"  INDEX (`secondaryname`), "
 			"  INDEX (`secondarycode`) "
-			") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")
+			") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")])
+
 		
-		create_table["recenttrades"]=(
+		#Table recenttrades
+		create_table.append(["recenttrades",(
 		    "CREATE TABLE `recenttrades` ("
 		    "  `id` BIGINT(50) NOT NULL AUTO_INCREMENT,"
 		    "  `id_corresponding_to_that_in_markets_table` INT(50),"
@@ -113,9 +116,10 @@ class cryptsy_database():
 		    "  INDEX (`id_corresponding_to_that_in_markets_table`), "
 		    "  INDEX (`time`), "
 		    "  FOREIGN KEY fk_id(id_corresponding_to_that_in_markets_table)   REFERENCES markets(id)   ON UPDATE RESTRICT   ON DELETE CASCADE"
-		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")
+		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")])
 
-		create_table["orderbook"]=(
+		#Table orderbook
+		create_table.append(["orderbook",(
 		    "CREATE TABLE `orderbook` ("
 		    "  `id` BIGINT(50) NOT NULL AUTO_INCREMENT,"
 		    "  `id_corresponding_to_that_in_markets_table` INT(50),"
@@ -128,9 +132,10 @@ class cryptsy_database():
 		    "  INDEX (`id_corresponding_to_that_in_markets_table`), "
 		    "  INDEX (`time_of_collection`), "
 		    "  FOREIGN KEY fk_id(id_corresponding_to_that_in_markets_table)   REFERENCES markets(id)   ON UPDATE RESTRICT   ON DELETE CASCADE"
-		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")
+		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")])
 
-		create_table["pricechart"]=(
+		#Table pricechart
+		create_table.append(["pricechart",(
 		    "CREATE TABLE `pricechart` ("
 		    "  `id` BIGINT(50) NOT NULL AUTO_INCREMENT,"
 		    "  `id_corresponding_to_that_in_markets_table` INT(50),"
@@ -142,26 +147,26 @@ class cryptsy_database():
 		    "  INDEX (`time_of_collection`) ,"
 		    "  PRIMARY KEY (`id`),"
 		    "   FOREIGN KEY fk_id(id_corresponding_to_that_in_markets_table)   REFERENCES markets(id)   ON UPDATE RESTRICT   ON DELETE CASCADE"
-		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")
+		    ") ENGINE=InnoDB, ROW_FORMAT=COMPRESSED")])
+		
 
 		self.create_table(create_table)
 
-	def create_table(self, dic_tables):
+	def create_table(self, LIST_tables):
 		""" Pass in a Dictionary """
-		#self.db_cursor.execute("SET GLOBAL innodb_file_per_table=1")
-		#self.db_cursor.execute("SET GLOBAL innodb_file_format=Barracuda")
-
-		for name, ddl in dic_tables.items():
+		self.db_cursor.execute("SET GLOBAL innodb_file_per_table=1")
+		self.db_cursor.execute("SET GLOBAL innodb_file_format=Barracuda")
+		
+		for each_table in LIST_tables:
 			try:
-				print("Creating table: '{}' ".format(name), end='\n')
-				self.db_cursor.execute(ddl)
+				self.db_cursor.execute(each_table[1])
 			except mysql.connector.Error as err:
 				if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
-					print("Table '%s' already exists."%name)
+					print("Table {} already exists.".format(each_table[0]))
 				else:
-					print(err.msg)
+					print("Creating Table {} Failed: ".format(each_table[0]), err.msg)
 			else:
-				print("Table '%s' Created."%name)
+				print("Table {} Created.".format(each_table[0]))
 
 	def query_table_markets_to_get_the_id(self,marketid,label):
 		query = ("SELECT id FROM markets"
@@ -256,6 +261,8 @@ class cryptsy_database():
 			return True
 
 if __name__ == '__main__':
+	#Unit TEST : Creating Tables
 	a= cryptsy_database("root", "root","cryptsy_database")
-	a.detect_a_new_machine()
+	del(a)
+
 
